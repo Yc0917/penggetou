@@ -105,3 +105,16 @@ BAIDU_BROWSER_AK=你的浏览器AK
 4. 切换推荐策略和候选地点，查看地图、预计碰面时间与每个人的路线。
 
 浏览器定位需要在 localhost、127.0.0.1 或 HTTPS 页面下使用，定位失败时可手动搜索。查询会调用百度地图服务，位置和路线数据可能在内存中缓存 3 分钟；当前应用适合本地单进程运行。
+
+## 部署到 Render 免费版
+
+仓库内的 `render.yaml` 配置了免费的 Python Web Service，使用新加坡区域、Python 3.13、固定版本依赖及单进程启动。密钥在 Render 环境变量中填写，不提交到仓库。
+
+1. 在 Render 创建 Blueprint，连接本仓库的 `main` 分支。
+2. 确认实例类型为 **Free**，填写 `BAIDU_SERVER_AK` 和 `BAIDU_BROWSER_AK`。
+3. 部署完成后，将实际分配的域名加入百度浏览器 AK 的 Referer 白名单；服务端 AK 如果使用 IP 白名单，则核对 Render 的出口地址。
+4. 使用公网 HTTPS 地址检查页面、地点搜索和路线推荐。
+
+免费实例闲置 15 分钟会休眠，再次访问通常需要约一分钟唤醒。网站托管额度与百度地图接口配额分别计算；当前为单进程演示应用，请保留请求限速。访问日志已关闭，避免记录地点搜索词。
+
+参考：[Render 免费版限制](https://render.com/docs/free)、[Python 版本设置](https://render.com/docs/python-version)。

@@ -1,0 +1,16 @@
+# Render 免费单实例部署；密钥只在控制台填写，不写入仓库。
+services:
+  - type: web
+    name: penggetou
+    runtime: python
+    plan: free
+    region: singapore
+    buildCommand: pip install -r requirements.lock
+    # 保留单进程请求队列；关闭访问日志，避免记录地点搜索词。
+    startCommand: python -m uvicorn app.main:app --host 0.0.0.0 --port $PORT --workers 1 --no-access-log
+    healthCheckPath: /
+    envVars:
+      - key: BAIDU_SERVER_AK
+        sync: false
+      - key: BAIDU_BROWSER_AK
+        sync: false
