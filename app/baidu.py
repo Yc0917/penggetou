@@ -72,6 +72,9 @@ class BaiduClient:
 
     def build_request(self, path: str, params: dict) -> httpx.Request:
         """对实际发送的路径和参数签名，避免编码或参数顺序不一致。"""
+        if self.sk and path.startswith("/directionlite/"):
+            # 轻量路线规划要求 SN 请求同时携带秒级时间戳，且时间戳参与签名。
+            params = {**params, "timestamp": str(int(time.time()))}
         request = self.http.build_request("GET", path, params={**params, "ak": self.ak})
         if self.sk:
             # 按百度协议再次编码后计算 MD5；SK 只参与计算，绝不发送。
