@@ -1,12 +1,14 @@
 """百度服务适配：按服务限速、有限重试、超时与短期内存缓存。"""
 
 import asyncio
+import hashlib
 import logging
 import math
 import os
 import time
 from collections import OrderedDict
 from datetime import datetime, timedelta, timezone
+from urllib.parse import quote_plus
 
 import httpx
 
@@ -57,6 +59,8 @@ def as_place(raw: dict) -> Place | None:
 class BaiduClient:
     def __init__(self, ak: str):
         self.ak = ak
+        # 配置 SK 时启用 SN 签名；未配置时兼容原有 IP 白名单方式。
+        self.sk = os.getenv("BAIDU_SERVER_SK", "").strip()
         self.http = httpx.AsyncClient(base_url="https://api.map.baidu.com", timeout=12.0)
         # 地点搜索与周边搜索共享百度的地点检索配额。
         self.queues: dict[str, ServiceQueue] = {}
@@ -65,6 +69,17 @@ class BaiduClient:
 
     async def close(self):
         await self.http.aclose()
+
+    def build_request(self, path: str, params: dict) -> httpx.Request:
+        """对实际发送的路径和参数签名，避免编码或参数顺序不一致。"""
+        request = self.http.build_request("GET", path, params={**params, "ak": self.ak})
+        if self.sk:
+            # 按百度协议再次编码后计算 MD5；SK 只参与计算，绝不发送。
+            unsigned = request.url.raw_path.decode("ascii")
+            signature = hashlib.md5(quote_plus(unsigned + self.sk).encode("utf-8")).hexdigest()
+            # 直接追加到原始查询串，确保签名后的参数不再被重新编码。
+            request.url = request.url.copy_with(query=request.url.query + b"&sn=" + signature.encode("ascii"))
+        return request
 
     async def get(self, path: str, params: dict, *, no_route_ok: bool = False) -> dict:
         if not self.ak:
@@ -94,7 +109,7 @@ class BaiduClient:
                 logger.info("baidu_request phase=start pid=%s request=%s time=%s service=%s attempt=%s",
                             os.getpid(), request_id, datetime.now(timezone.utc).isoformat(), interface, attempt + 1)
                 try:
-                    response = await self.http.get(path, params={**params, "ak": self.ak})
+                    response = await self.http.send(self.build_request(path, params))
                     # HTTP 429 无法明确区分日额度与短时限流，不盲目重试。
                     if response.status_code == 429:
                         raise MapQuotaError("百度地图限制了请求，已停止本次查询，请稍后重试或检查控制台配额。")
