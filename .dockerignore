@@ -1,0 +1,11 @@
+# 只向镜像构建传递运行文件，排除密钥、历史记录和虚拟环境。
+**
+!Dockerfile
+!requirements.lock
+!app/
+!app/**
+!static/
+!static/**
+**/__pycache__/
+**/*.pyc
+**/.DS_Store
