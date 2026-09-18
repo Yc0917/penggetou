@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="820" viewBox="0 0 1200 820" fill="none">
+<!-- 空白状态的抽象地图插画，不表示真实道路、位置或推荐结果。 -->
+<rect width="1200" height="820" fill="#eef0eb"/>
+<g fill="#e5e8e2" stroke="#dde2d9" stroke-width="2"><rect x="34" y="24" width="190" height="125" rx="20"/><rect x="267" y="30" width="170" height="210" rx="18"/><rect x="490" y="18" width="214" height="115" rx="17"/><rect x="33" y="197" width="173" height="212" rx="20"/><rect x="251" y="282" width="236" height="168" rx="20"/><rect x="29" y="488" width="190" height="123" rx="18"/><rect x="30" y="669" width="249" height="115" rx="18"/><rect x="306" y="635" width="159" height="153" rx="18"/><rect x="508" y="615" width="188" height="172" rx="18"/><rect x="930" y="25" width="239" height="188" rx="18"/><rect x="956" y="271" width="218" height="163" rx="18"/><rect x="966" y="486" width="208" height="114" rx="18"/><rect x="866" y="654" width="302" height="131" rx="18"/></g>
+<g fill="#d7e6d4"><path d="M531 193h167v177H531z"/><rect x="267" y="490" width="179" height="100" rx="30"/><rect x="979" y="312" width="134" height="80" rx="25"/><path d="M494 457h187v104H494z"/></g>
+<path d="M836-45C700 92 930 191 802 334S829 562 756 873" stroke="#c5e0ec" stroke-width="115"/>
+<path d="M-30 170H619Q703 170 739 240L982 700M238-20V602L300 850M472-20V865M-20 465H1220M-20 635H1220M927-20V842M20 820 1160-30" stroke="#dce1dd" stroke-width="27"/>
+<path d="M-30 170H619Q703 170 739 240L982 700M238-20V602L300 850M472-20V865M-20 465H1220M-20 635H1220M927-20V842M20 820 1160-30" stroke="#fff" stroke-width="20"/>
+<path d="M-30 170H619Q703 170 739 240L982 700M-20 635H1220" stroke="#f5edda" stroke-width="12"/>
+<g fill="#bfd5b8" opacity=".7"><circle cx="560" cy="231" r="15"/><circle cx="592" cy="266" r="20"/><circle cx="650" cy="219" r="18"/><circle cx="617" cy="330" r="18"/><circle cx="333" cy="544" r="21"/><circle cx="389" cy="524" r="13"/><circle cx="1042" cy="351" r="22"/></g>
+</svg>

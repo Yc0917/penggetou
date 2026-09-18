@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#f5f5f7">
+  <meta name="description" content="为从不同地方出发的朋友，找到大家都方便的见面地点。">
+  <title>碰个头 · 让见面更简单</title>
+  <link rel="icon" type="image/svg+xml" href="/static/favicon.svg">
+  <link rel="stylesheet" href="/static/styles.css?v=20260918-result-panels">
+  <script src="/static/app.js?v=20260918-result-panels" defer></script>
+</head>
+<body>
+  <!-- 复用线性图标，保持不同区域的视觉语言一致。 -->
+  <svg class="icon-library" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><defs>
+    <symbol id="icon-pin" viewBox="0 0 24 24"><path d="M20 10c0 6-8 12-8 12S4 16 4 10a8 8 0 1 1 16 0Z"/><circle cx="12" cy="10" r="2.5"/></symbol>
+    <symbol id="icon-location" viewBox="0 0 24 24"><path d="m21 3-6.5 18-4-7.5L3 9.5Z"/></symbol>
+    <symbol id="icon-people" viewBox="0 0 24 24"><circle cx="9" cy="8" r="3"/><path d="M3 20v-2a6 6 0 0 1 12 0v2M16 5a3 3 0 0 1 0 6m2 3a5 5 0 0 1 3 4v2"/></symbol>
+    <symbol id="icon-arrow" viewBox="0 0 24 24"><path d="M5 12h14m-5-5 5 5-5 5"/></symbol>
+    <symbol id="icon-train" viewBox="0 0 24 24"><rect x="5" y="3" width="14" height="15" rx="4"/><path d="M5 11h14M8 21l2-3m6 3-2-3M12 3v8"/><path d="M8 15h1m6 0h1"/></symbol>
+  </defs></svg>
+  <header class="topbar">
+    <a class="brand" href="/" aria-label="碰个头首页"><span class="brand-mark"><i></i><i></i></span><span>碰个头</span></a>
+    <div class="header-meta"><span class="mode-badge"><i></i> 公交 · 地铁会合</span></div>
+  </header>
+  <div id="error" class="error" role="alert" hidden></div>
+  <main class="workspace" data-mobile-view="planning">
+    <aside class="sidebar" id="planning-panel" aria-label="填写出发信息">
+      <button class="sheet-toggle" id="sheet-toggle" type="button" aria-expanded="true" aria-controls="panel-body"><span class="sheet-handle"></span><span>出发信息 <small id="sheet-summary">2 人同行</small></span><span class="sheet-chevron">⌄</span></button>
+      <div id="panel-body" class="panel-body">
+        <form id="meeting-form" novalidate><fieldset id="form-fields">
+          <div class="departure-tools">
+          <div class="city-field"><svg class="icon"><use href="#icon-pin"/></svg><label for="city">城市</label><input id="city" placeholder="输入会合城市" maxlength="30" required autocomplete="off"></div>
+          <div class="location-controls"><button type="button" id="locate-button"><svg class="icon"><use href="#icon-location"/></svg>使用我的位置</button><p id="location-status" role="status">正在获取你的位置，也可以手动填写。</p></div>
+          </div>
+          <div class="section-title"><h2>谁一起出发</h2><div class="people-actions"><span id="person-count">2 / 6 人</span><button type="button" class="add-person" id="add-person"><span aria-hidden="true">＋</span> 添加朋友</button></div></div>
+          <div id="participants"></div>
+          <div class="activity-row"><label class="activity-label" for="activity">见面做什么</label><select id="activity"><option value="coffee">喝杯咖啡</option><option value="food">一起吃饭</option></select></div>
+          <p class="transport-note"><svg class="icon"><use href="#icon-train"/></svg>公交 / 地铁，含接驳步行</p>
+          <div class="submit-dock"><button class="primary-button" id="submit-button" type="submit">找个地方碰头 <svg class="icon"><use href="#icon-arrow"/></svg></button></div>
+        </fieldset></form>
+        <p class="local-note">无需注册，一人填写就好。位置仅用于本次查询，<br>将发送至百度地图进行地址解析和路线计算。</p>
+      </div>
+    </aside>
+    <section class="content" aria-label="会合方案">
+      <div class="strategy-bar"><div class="strategy-switch" aria-label="推荐策略"><button type="button" class="active" data-strategy="balanced" aria-pressed="true">最远的人也方便</button><button type="button" data-strategy="efficient" aria-pressed="false">大家总耗时最少</button></div><span class="result-count" id="result-count"></span></div>
+      <!-- 策略对比放在地图前，优先展示两种方案的地点与耗时。 -->
+      <div id="strategy-comparison" aria-live="polite"></div>
+      <div id="result-area" aria-live="polite"></div>
+      <p id="result-updated" class="warnings" hidden></p>
+      <footer class="content-footer"><span>地图与路线由百度地图提供 · 耗时为估计值</span></footer>
+    </section>
+  </main>
+  <nav class="mobile-tabs" aria-label="界面切换"><button type="button" data-view="planning" aria-pressed="true">出发信息</button><button type="button" data-view="map" aria-pressed="false">地图</button><button type="button" data-view="places" aria-pressed="false">地点选择</button><button type="button" data-view="details" aria-pressed="false">地点详情</button></nav>
+  <!-- 原生对话框提供焦点约束、Escape 关闭和键盘访问。 -->
+  <dialog id="avatar-dialog" class="avatar-dialog" aria-labelledby="avatar-dialog-title">
+    <div class="avatar-dialog-header"><div><h2 id="avatar-dialog-title">选个动物头像</h2><p>选一个，和朋友一起出发。</p></div><button type="button" id="avatar-close" aria-label="关闭头像选择">×</button></div>
+    <div id="avatar-options" class="avatar-options"></div>
+    <p class="avatar-dialog-note">头像外圈的颜色，对应你的地图路线</p>
+  </dialog>
+</body>
+</html>
